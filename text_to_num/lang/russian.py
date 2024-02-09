@@ -218,7 +218,7 @@ class Russian(Language):
 
     AND_NUMS: Set[str] = set()
     AND = "и"
-    NEVER_IF_ALONE = {"нуль", "один"}
+    NEVER_IF_ALONE = {"нуль"}
 
     # Relaxed composed numbers (two-words only)
     # start => (next, target)
