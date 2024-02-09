@@ -314,6 +314,10 @@ class TestTextToNumRU(TestCase):
         expected = "первый, пятый, одиннадцатый, 21-й, 121-й, 111-й"
         self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=20))
 
+        source = "Сейчас пол второго ночи, а он будет в пол двенадцатого."
+        expected = "Сейчас пол второго ночи, а он будет в пол двенадцатого."
+        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=12))
+
     def test_alpha2digit_decimals(self):
         source = (
             "двенадцать точка девяносто девять, сто двадцать точка ноль пять,"
