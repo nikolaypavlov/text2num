@@ -72,7 +72,8 @@ STENS: Dict[str, int] = {
 MTENS: Dict[str, int] = {
     word: value * 10
     for value, word in enumerate(
-        "двадцать тридцать сорок пятьдесят шестьдесят семьдесят восемьдесят девяносто".split(), 2
+        "двадцать тридцать сорок пятьдесят шестьдесят семьдесят восемьдесят девяносто".split(),
+        2,
     )
 }
 
@@ -129,6 +130,7 @@ RAD_MAP = {
     "перв": "один",
     "втор": "два",
     "трет": "три",
+    "треть": "три",
     "четверт": "четыре",
     "четвёрт": "четыре",
     "пят": "пять",
@@ -137,6 +139,17 @@ RAD_MAP = {
     "восьм": "восемь",
     "девят": "девять",
     "десят": "десять",
+    "одинадцат": "одиннадцать",  # common typo
+    "одиннадцат": "одиннадцать",
+    "двинадцат": "двенадцать",  # common typo
+    "двенадцат": "двенадцать",
+    "тринадцат": "тринадцать",
+    "четырнадцат": "четырнадцать",
+    "пятнадцат": "пятнадцать",
+    "шестнадцат": "шестнадцать",
+    "семнадцат": "семнадцать",
+    "восемнадцат": "восемнадцать",
+    "девятнадцат": "девятнадцать",
     "двадцат": "двадцать",
     "тридцат": "тридцать",
     "сороков": "сорок",
@@ -162,6 +175,31 @@ SKLON_MAP = {
     "восемнадцать": "восемьнадцать",
 }
 
+ORDINAL_ENDINGS = (
+    "ый",  # первый
+    "ая",  # пятая
+    "ое",  # седьмое
+    "ой",  # второй
+    "ую",  # вторую
+    "ым",  # пятым
+    "ом",  # на пятом
+    "ого",  # пятого
+    "ому",  # пятому
+    "ий",  # третий
+    "ей",  # третьей
+    "ем",  # третьем
+    "им",  # третьим
+    "ье",  # третье
+    "ья",  # третья
+    "ью",  # третью
+    "ему",  # третьему
+    "его",  # третьего
+    "ыми",  # первыми
+    "ими",  # третьими
+)
+
+VOWELS = {"а", "е", "ё", "и", "о", "у", "ы", "э", "ю", "я"}
+
 
 class Russian(Language):
     MULTIPLIERS = MULTIPLIERS
@@ -180,7 +218,7 @@ class Russian(Language):
 
     AND_NUMS: Set[str] = set()
     AND = "и"
-    NEVER_IF_ALONE = {"нуль"}
+    NEVER_IF_ALONE = {"нуль", "один"}
 
     # Relaxed composed numbers (two-words only)
     # start => (next, target)
@@ -193,21 +231,28 @@ class Russian(Language):
 
         Return None if word is not an ordinal or is better left in letters.
         """
-        ordinal_suff = word.endswith(("ый", "ая", "ое", "ой", "ий", "ье", "ья"))
-        if not ordinal_suff:
-            return None
+        for ending in ORDINAL_ENDINGS:
+            if word.endswith(ending):
+                return RAD_MAP.get(word[: -len(ending)], None)
 
-        source = word[:-2]
-
-        if source in RAD_MAP:
-            return RAD_MAP[source]
-
-        return word
+        return None
 
     def num_ord(self, digits: str, original_word: str) -> str:
-        """Add suffix to number in digits to make an ordinal"""
-        sf = original_word[-2:]
-        return f"{digits}{sf}"
+        """Add suffix to number in digits to make an ordinal.
+        There are rules for extension in Russian:
+
+        After the hyphen, one letter is written - the last letter of the word, if it is preceded
+        by a vowel: первый — 1-й, первым — 1-м, десятая — 10-я, двадцать восьмое — 28-е.
+
+        After the hyphen, two letters are written if the last letter of the numeral is preceded
+        by a consonant: первого — 1-го, десятому — 10-му.
+        """
+        if original_word[-2] in VOWELS or original_word[-2] == "ь":
+            sf = original_word[-1:]
+        else:
+            sf = original_word[-2:]
+
+        return f"{digits}-{sf}"
 
     def normalize(self, word: str) -> str:
         if word in SKLON_MAP:
