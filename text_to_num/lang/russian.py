@@ -167,6 +167,7 @@ RAD_MAP = {
 
 SKLON_MAP = {
     "одна": "один",
+    "одно": "один",
     "две": "два",
     "одинадцать": "одиннадцать",
     "пятнадцать": "пятьнадцать",
@@ -218,7 +219,7 @@ class Russian(Language):
 
     AND_NUMS: Set[str] = set()
     AND = "и"
-    NEVER_IF_ALONE = {"нуль"}
+    NEVER_IF_ALONE = {"нуль", "один"}
 
     # Relaxed composed numbers (two-words only)
     # start => (next, target)

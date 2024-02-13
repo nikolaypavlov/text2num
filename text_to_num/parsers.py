@@ -641,6 +641,9 @@ class WordToDigitParser:
         Then, to parse a new number, you need to instanciate a new engine and start
         again from the last word you tried (the one that has just been rejected).
         """
+        original_word = word
+        word = self.lang.normalize(word.lower())
+
         if self.closed or self.is_alone(word, look_ahead):
             self.last_word = word
             return False
@@ -681,7 +684,7 @@ class WordToDigitParser:
                     word,
                 )
                 if self.int_builder.value > self.ordinal_threshold
-                else word
+                else original_word
             )
             self.closed = True
         elif (

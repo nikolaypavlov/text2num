@@ -30,122 +30,129 @@ from text_to_num import alpha2digit, text2num
 
 class TestTextToNumRU(TestCase):
     def test_text2num(self):
-        test1 = "пятьдесят три миллиарда двести сорок три тысячи семьсот двадцать четыре"
-        self.assertEqual(text2num(test1, 'ru'), 53_000_243_724)
-
-        test2 = (
-            "пятьдесят один миллион пятьсот семьдесят восемь тысяч триста два"
+        test1 = (
+            "пятьдесят три миллиарда двести сорок три тысячи семьсот двадцать четыре"
         )
-        self.assertEqual(text2num(test2, 'ru'), 51_578_302)
+        self.assertEqual(text2num(test1, "ru"), 53_000_243_724)
+
+        test2 = "пятьдесят один миллион пятьсот семьдесят восемь тысяч триста два"
+        self.assertEqual(text2num(test2, "ru"), 51_578_302)
 
         test3 = "восемьдесят пять"
-        self.assertEqual(text2num(test3, 'ru'), 85)
+        self.assertEqual(text2num(test3, "ru"), 85)
 
         test4 = "восемьдесят один"
-        self.assertEqual(text2num(test4, 'ru'), 81)
+        self.assertEqual(text2num(test4, "ru"), 81)
 
-        self.assertEqual(text2num("пятьнадцать", 'ru'), 15)
-        self.assertEqual(text2num("сто пятьнадцать", 'ru'), 115)
-        self.assertEqual(text2num("сто пятнадцать", 'ru'), 115)
-        self.assertEqual(text2num("семьдесят пять тысяч", 'ru'), 75000)
-        self.assertEqual(text2num("тысяча девятьсот двадцать", 'ru'), 1920)
-        self.assertEqual(text2num("одна тысяча девятьсот двадцать", 'ru'), 1920)
+        self.assertEqual(text2num("пятьнадцать", "ru"), 15)
+        self.assertEqual(text2num("сто пятьнадцать", "ru"), 115)
+        self.assertEqual(text2num("сто пятнадцать", "ru"), 115)
+        self.assertEqual(text2num("семьдесят пять тысяч", "ru"), 75000)
+        self.assertEqual(text2num("тысяча девятьсот двадцать", "ru"), 1920)
+        self.assertEqual(text2num("одна тысяча девятьсот двадцать", "ru"), 1920)
 
     def test_text2num_centuries(self):
-        self.assertEqual(text2num("тысяча девятьсот семьдесят три", 'ru'), 1973)
+        self.assertEqual(text2num("тысяча девятьсот семьдесят три", "ru"), 1973)
 
     def test_text2num_exc(self):
-        self.assertRaises(ValueError, text2num, "тысяча тысяча двести", 'ru')
-        self.assertRaises(ValueError, text2num, "шестьдесят пятьдесят", 'ru')
-        self.assertRaises(ValueError, text2num, "шестьдесят сто", 'ru')
+        self.assertRaises(ValueError, text2num, "тысяча тысяча двести", "ru")
+        self.assertRaises(ValueError, text2num, "шестьдесят пятьдесят", "ru")
+        self.assertRaises(ValueError, text2num, "шестьдесят сто", "ru")
 
     def test_text2num_zeroes(self):
-        self.assertEqual(0, text2num("ноль", 'ru'))
-        self.assertEqual(8, text2num("ноль восемь", 'ru'), 8)
-        self.assertEqual(125, text2num("ноль ноль сто двадцать пять", 'ru'))
-        self.assertRaises(ValueError, text2num, "пять ноль", 'ru')
-        self.assertRaises(ValueError, text2num, "пять ноль три", 'ru')
-        self.assertRaises(ValueError, text2num, "пятьдесят три ноль", 'ru')
+        self.assertEqual(0, text2num("ноль", "ru"))
+        self.assertEqual(8, text2num("ноль восемь", "ru"), 8)
+        self.assertEqual(125, text2num("ноль ноль сто двадцать пять", "ru"))
+        self.assertRaises(ValueError, text2num, "пять ноль", "ru")
+        self.assertRaises(ValueError, text2num, "пять ноль три", "ru")
+        self.assertRaises(ValueError, text2num, "пятьдесят три ноль", "ru")
 
     def test_alpha2digit_phones(self):
         source = "восемь девятьсот два сто один ноль один ноль один"
         expected = "8 902 101 01 01"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "плюс семь восемьсот пятьдесят девять сто один ноль сто один"
         expected = "+7 859 101 0101"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "Телефон восемь девятьсот шестьдесят два пятьсот девятнадцать семьдесят ноль ноль"
         expected = "Телефон 8 962 519 70 00"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "три сто пять сто один ноль один ноль один"
         expected = "3 105 101 01 01"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
     def test_alpha2digit_integers(self):
         source = "Двадцать пять коров, двенадцать сотен цыплят и сто двадцать пять точка сорок кг картофеля."
         expected = "25 коров, 1200 цыплят и 125.40 кг картофеля."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "Одна сотня огурцов, две сотни помидор, пять сотен рублей."
         expected = "100 огурцов, 200 помидор, 500 рублей."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "одна тысяча двести шестьдесят шесть рублей."
         expected = "1266 рублей."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
         source = "тысяча двести шестьдесят шесть рублей."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "один, два, три, четыре, двадцать, пятьнадцать"
         expected = "1, 2, 3, 4, 20, 15"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "двадцать один, тридцать один."
         expected = "21, 31."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
     def test_relaxed(self):
         source = "один два три четыре двадцать пять."
         expected = "1 2 3 4 25."
-        self.assertEqual(expected, alpha2digit(source, 'ru', relaxed=True))
+        self.assertEqual(expected, alpha2digit(source, "ru", relaxed=True))
 
         source = "один два три четыре двадцать, пять."
         expected = "1 2 3 4 20, 5."
-        self.assertEqual(expected, alpha2digit(source, 'ru', relaxed=True))
+        self.assertEqual(expected, alpha2digit(source, "ru", relaxed=True))
 
     def test_alpha2digit_formal(self):
         source = "плюс тридцать три, девять, шестьдесят, ноль шесть, двенадцать, двадцать один"
         expected = "+33, 9, 60, 06, 12, 21"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "ноль девять, шестьдесят, ноль шесть, двенадцать, двадцать один"
         expected = "09, 60, 06, 12, 21"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
         source = "Сам по себе я одиночка"
-        self.assertEqual(source, alpha2digit(source, 'ru'))
+        self.assertEqual(source, alpha2digit(source, "ru"))
+
+        source = "Он один? Она одна? Оно одно? Двадцать один? Двадцать одна? Двадцать одно?"
+        expected = "Он один? Она одна? Оно одно? 21? 21? 21?"
+        self.assertEqual(expected, alpha2digit(source, "ru"))
+
+    def test_alpha2digit_if_alone(self):
+        source = "Он нуль? Он один? Она одна? Оно одно? Двадцать один? Двадцать одна? Двадцать одно?"
+        expected = "Он нуль? Он один? Она одна? Оно одно? 21? 21? 21?"
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
     def test_and(self):
         source = "пятьдесят, шестьдесят, тридцать и одиннадцать"
         expected = "50, 60, 30 и 11"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
     def test_alpha2digit_zero(self):
         source = "тринадцать тысяч, ноль девяносто"
         expected = "13000, 090"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
-        self.assertEqual("0", alpha2digit("ноль", 'ru'))
+        self.assertEqual("0", alpha2digit("ноль", "ru"))
 
     def test_alpha2digit_ordinals_force(self):
-        source = (
-            "Пятый, третий, второй, двадцать первый, сотый, тысяча двести тридцатый, двадцать пятый, тридцать восьмой, сорок девятый."
-        )
+        source = "Пятый, третий, второй, двадцать первый, сотый, тысяча двести тридцатый, двадцать пятый, тридцать восьмой, сорок девятый."
         expected = "5-й, 3-й, 2-й, 21-й, 100-й, 1230-й, 25-й, 38-й, 49-й."
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
         source = (
             "первый, второй, третий, четвёртый, четвертый, пятый, шестой, седьмой, восьмой, девятый, десятый, "
             "одиннадцатый, двенадцатый, тринадцатый, четырнадцатый, пятнадцатый, шестнадцатый, семнадцатый, восемнадцатый, девятнадцатый, двадцатый, "
@@ -158,7 +165,7 @@ class TestTextToNumRU(TestCase):
             "21-й, 22-й, 23-й, 24-й, 24-й, 25-й, 26-й, 27-й, 28-й, 29-й, 30-й, 41-й, 52-й, 63-й, 74-й, 84-й, 95-й, "
             "101-й, 102-й, 103-й, 104-й, 104-й, 105-й, 106-й, 107-й, 108-й, 109-й, 110-й"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первая, вторая, третья, четвёртая, четвертая, пятая, шестая, седьмая, восьмая, девятая, десятая, "
@@ -172,7 +179,7 @@ class TestTextToNumRU(TestCase):
             "21-я, 22-я, 23-я, 24-я, 24-я, 25-я, 26-я, 27-я, 28-я, 29-я, 30-я, 41-я, 52-я, 63-я, 74-я, 84-я, 95-я, "
             "101-я, 102-я, 103-я, 104-я, 104-я, 105-я, 106-я, 107-я, 108-я, 109-я, 110-я"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первой, второй, третьей, четвёртой, четвертой, пятой, шестой, седьмой, восьмой, девятой, десятой, "
@@ -186,7 +193,7 @@ class TestTextToNumRU(TestCase):
             "21-й, 22-й, 23-й, 24-й, 24-й, 25-й, 26-й, 27-й, 28-й, 29-й, 30-й, 41-й, 52-й, 63-й, 74-й, 84-й, 95-й, "
             "101-й, 102-й, 103-й, 104-й, 104-й, 105-й, 106-й, 107-й, 108-й, 109-й, 110-й"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первого, второго, третьего, четвёртого, четвертого, пятого, шестого, седьмого, восьмого, девятого, десятого, "
@@ -200,7 +207,7 @@ class TestTextToNumRU(TestCase):
             "21-го, 22-го, 23-го, 24-го, 24-го, 25-го, 26-го, 27-го, 28-го, 29-го, 30-го, 41-го, 52-го, 63-го, 74-го, 84-го, 95-го, "
             "101-го, 102-го, 103-го, 104-го, 104-го, 105-го, 106-го, 107-го, 108-го, 109-го, 110-го"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первому, второму, третьему, четвёртому, четвертому, пятому, шестому, седьмому, восьмому, девятому, десятому, "
@@ -214,7 +221,7 @@ class TestTextToNumRU(TestCase):
             "21-му, 22-му, 23-му, 24-му, 24-му, 25-му, 26-му, 27-му, 28-му, 29-му, 30-му, 41-му, 52-му, 63-му, 74-му, 84-му, 95-му, "
             "101-му, 102-му, 103-му, 104-му, 104-му, 105-му, 106-му, 107-му, 108-му, 109-му, 110-му"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первым, вторым, третьим, четвёртым, четвертым, пятым, шестым, седьмым, восьмым, девятым, десятым, "
@@ -228,7 +235,7 @@ class TestTextToNumRU(TestCase):
             "21-м, 22-м, 23-м, 24-м, 24-м, 25-м, 26-м, 27-м, 28-м, 29-м, 30-м, 41-м, 52-м, 63-м, 74-м, 84-м, 95-м, "
             "101-м, 102-м, 103-м, 104-м, 104-м, 105-м, 106-м, 107-м, 108-м, 109-м, 110-м"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первую, вторую, третью, четвёртую, четвертую, пятую, шестую, седьмую, восьмую, девятую, десятую, "
@@ -242,7 +249,7 @@ class TestTextToNumRU(TestCase):
             "21-ю, 22-ю, 23-ю, 24-ю, 24-ю, 25-ю, 26-ю, 27-ю, 28-ю, 29-ю, 30-ю, 41-ю, 52-ю, 63-ю, 74-ю, 84-ю, 95-ю, "
             "101-ю, 102-ю, 103-ю, 104-ю, 104-ю, 105-ю, 106-ю, 107-ю, 108-ю, 109-ю, 110-ю"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первыми, вторыми, третьими, четвёртыми, четвертыми, пятыми, шестыми, седьмыми, восьмыми, девятыми, десятыми, "
@@ -256,7 +263,7 @@ class TestTextToNumRU(TestCase):
             "21-ми, 22-ми, 23-ми, 24-ми, 24-ми, 25-ми, 26-ми, 27-ми, 28-ми, 29-ми, 30-ми, 41-ми, 52-ми, 63-ми, 74-ми, 84-ми, 95-ми, "
             "101-ми, 102-ми, 103-ми, 104-ми, 104-ми, 105-ми, 106-ми, 107-ми, 108-ми, 109-ми, 110-ми"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первом, втором, третьем, четвёртом, четвертом, пятом, шестом, седьмом, восьмом, девятом, десятом, "
@@ -270,7 +277,7 @@ class TestTextToNumRU(TestCase):
             "21-м, 22-м, 23-м, 24-м, 24-м, 25-м, 26-м, 27-м, 28-м, 29-м, 30-м, 41-м, 52-м, 63-м, 74-м, 84-м, 95-м, "
             "101-м, 102-м, 103-м, 104-м, 104-м, 105-м, 106-м, 107-м, 108-м, 109-м, 110-м"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = (
             "первое, второе, третье, четвёртое, четвертое, пятое, шестое, седьмое, восьмое, девятое, десятое, "
@@ -284,39 +291,41 @@ class TestTextToNumRU(TestCase):
             "21-е, 22-е, 23-е, 24-е, 24-е, 25-е, 26-е, 27-е, 28-е, 29-е, 30-е, 41-е, 52-е, 63-е, 74-е, 84-е, 95-е, "
             "101-е, 102-е, 103-е, 104-е, 104-е, 105-е, 106-е, 107-е, 108-е, 109-е, 110-е"
         )
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
-        source = "двадцать второе место на двадцать первой олимпиаде занял первый и второй"
+        source = (
+            "двадцать второе место на двадцать первой олимпиаде занял первый и второй"
+        )
         expected = "22-е место на 21-й олимпиаде занял 1-й и 2-й"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = "каждый пятый на первый второй расчитайсь!"
         expected = "каждый 5-й на 1-й 2-й расчитайсь!"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = "На двадцать четвертую олимпиаду пришли первый и второй"
         expected = "На 24-ю олимпиаду пришли 1-й и 2-й"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = "Она была двести тринадцатая в очереди"
         expected = "Она была 213-я в очереди"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = "Я отдал ключи Второму, а Сто Двадцать Третьему нет"
         expected = "Я отдал ключи 2-му, а 123-му нет"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=0))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=0))
 
         source = "Первый, Пятый, Девятый, Одиннадцатый, Двадцать первый, Сто двадцать первый, Сто одиннадцатый"
-        expected = "первый, пятый, 9-й, 11-й, 21-й, 121-й, 111-й"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=8))
+        expected = "Первый, Пятый, 9-й, 11-й, 21-й, 121-й, 111-й"
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=8))
 
         source = "Первый, Пятый, Одиннадцатый, Двадцать первый, Сто двадцать первый, Сто одиннадцатый"
-        expected = "первый, пятый, одиннадцатый, 21-й, 121-й, 111-й"
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=20))
+        expected = "Первый, Пятый, Одиннадцатый, 21-й, 121-й, 111-й"
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=20))
 
         source = "Сейчас пол второго ночи, а он будет в пол двенадцатого."
         expected = "Сейчас пол второго ночи, а он будет в пол двенадцатого."
-        self.assertEqual(expected, alpha2digit(source, 'ru', ordinal_threshold=12))
+        self.assertEqual(expected, alpha2digit(source, "ru", ordinal_threshold=12))
 
     def test_alpha2digit_decimals(self):
         source = (
@@ -324,74 +333,71 @@ class TestTextToNumRU(TestCase):
             " сто двадцать целых ноль пять, одна целая двести тридцать шесть."
         )
         expected = "12.99, 120.05, 120.05, 1.236."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
-        self.assertEqual("0.15", alpha2digit("точка пятьнадцать", 'ru'))
-        self.assertEqual("0.15", alpha2digit("ноль целых пятьнадцать", 'ru'))
+        self.assertEqual("0.15", alpha2digit("точка пятьнадцать", "ru"))
+        self.assertEqual("0.15", alpha2digit("ноль целых пятьнадцать", "ru"))
 
     def test_alpha2digit_signed(self):
         source = "В комнате плюс двадцать градусов, тогда как на улице минус пятьдесят."
         expected = "В комнате +20 градусов, тогда как на улице -50."
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
     def test_uppercase(self):
         source = "ПЯТЬНАДЦАТЬ ОДИН ДЕСЯТЬ ОДИН"
         expected = "15 1 10 1"
-        self.assertEqual(expected, alpha2digit(source, 'ru'))
+        self.assertEqual(expected, alpha2digit(source, "ru"))
 
     def test_hundreds(self):
         source = "пятьдесят один миллион пятьсот семьдесят восемь тысяч триста два"
         expected = 51578302
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "восемьдесят один"
         expected = 81
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "восемьсот"
         expected = 800
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "сто"
         expected = 100
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "сто двадцать"
         expected = 120
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "сто два"
         expected = 102
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "семьсот один"
         expected = 701
 
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
         source = "восемьсот миллионов"
         expected = 800_000_000
-        self.assertEqual(expected, text2num(source, 'ru'))
-
+        self.assertEqual(expected, text2num(source, "ru"))
 
     def test_big_numbers(self):
         source = "триллион миллиард миллион тысяча один"
         expected = 1_001_001_001_001
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "один триллион один миллиард один миллион одна тысяча один"
         expected = 1_001_001_001_001
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "одиннадцать триллионов одиннадцать миллиардов одиннадцать миллионов одиннадцать тысяч одиннадцать"
         expected = 11_011_011_011_011
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "сто одиннадцать триллионов сто одиннадцать миллиардов сто одиннадцать миллионов сто одиннадцать тысяч сто одиннадцать"
         expected = 111_111_111_111_111
-        self.assertEqual(expected, text2num(source, 'ru'))
+        self.assertEqual(expected, text2num(source, "ru"))
 
         source = "сто десять триллионов сто десять миллиардов сто десять миллионов сто десять тысяч сто десять"
         expected = 110_110_110_110_110
-        self.assertEqual(expected, text2num(source, 'ru'))
-
-
+        self.assertEqual(expected, text2num(source, "ru"))
